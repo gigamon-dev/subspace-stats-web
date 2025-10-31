@@ -44,6 +44,15 @@ namespace SubspaceStats
             builder.Services.AddScoped<IAuthorizationHandler, ManageSeasonAuthorizationHandler>();
             builder.Services.AddScoped<IAuthorizationHandler, ManageSeasonDetailsAuthorizationHandler>();
 
+            if (!builder.Environment.IsDevelopment())
+            {
+                // Email Sender Service for ASP.NET Core Identity
+                // https://learn.microsoft.com/en-us/aspnet/core/security/authentication/accconfirm
+                // To use this, configure the AuthenticationEmail section in appsettings.json
+                builder.Services.AddTransient<IEmailSender<SubspaceStatsUser>, EmailSender>();
+                builder.Services.Configure<AuthenticationEmailOptions>(builder.Configuration.GetSection(AuthenticationEmailOptions.AuthenticationEmailSectionKey));
+            }
+
             builder.Services.AddAuthorizationBuilder()
                 .AddPolicy(PolicyNames.Manager, policy => policy.AddRequirements(new ManagerRequirement()));
 
