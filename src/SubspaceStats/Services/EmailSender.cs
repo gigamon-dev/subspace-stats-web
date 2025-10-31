@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using MimeKit;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using SubspaceStats.Areas.Identity.Data;
 using SubspaceStats.Options;
-using System.Net.Mail;
-using System.Text;
 
 namespace SubspaceStats.Services;
 
@@ -99,38 +99,41 @@ public class EmailSender(
 
     private async Task ExecuteSmtp(string toEmail, string subject, string plainMessage, string htmlMessage)
     {
-        // TODO: Replace use of System.Net.Mail with MailKit.
-        SmtpClient smtpClient = new();
-        smtpClient.UseDefaultCredentials = _options.SmtpUseDefaultCredentials;
-        smtpClient.EnableSsl = _options.SmtpSSL;
-        smtpClient.Host = _options.SmtpHost!;
-        smtpClient.Port = _options.SmtpPort;
-        smtpClient.Credentials = new System.Net.NetworkCredential(_options.SmtpUsername, _options.SmtpPassword);
-
-        MailMessage mailMessage = new()
-        {
-            From = new MailAddress(_options.FromEmail, _options.FromName),
-            Subject = subject,
-        };
-        mailMessage.To.Add(toEmail);
+        using MimeMessage message = new();
+        message.From.Add(new MailboxAddress(_options.FromName, _options.FromEmail));
+        message.To.Add(new MailboxAddress(toEmail, toEmail));
+        message.Subject = subject;
 
         // Set the body.
-        mailMessage.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(plainMessage, Encoding.UTF8, "text/plain"));
-        mailMessage.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(htmlMessage, Encoding.UTF8, "text/html"));
+        BodyBuilder builder = new();
+        builder.TextBody = plainMessage;
+        builder.HtmlBody = htmlMessage;
+        message.Body = builder.ToMessageBody();
+
+        using SmtpClient client = new();
 
         try
         {
-            await smtpClient.SendMailAsync(mailMessage);
+            // Connect
+            await client.ConnectAsync(_options.SmtpHost, _options.SmtpPort, _options.SmtpSSL);
 
-            _logger.LogInformation(LogEmailSuccessTemplate, toEmail);
+            if (!string.IsNullOrEmpty(_options.SmtpUsername))
+            {
+                // Authenticate
+                await client.AuthenticateAsync(_options.SmtpUsername, _options.SmtpPassword);
+            }
+
+            // Send
+            await client.SendAsync(message);
         }
-        catch (SmtpException smtpEx)
+        catch (SmtpCommandException smtpCommandException)
         {
             _logger.LogError(
                 LogEmailFailureTemplate,
                 toEmail,
-                smtpEx.StatusCode,
-                smtpEx.Message);
+                smtpCommandException.StatusCode,
+                smtpCommandException.Message);
+            throw;
         }
         catch (Exception ex)
         {
@@ -140,5 +143,9 @@ public class EmailSender(
                 "(none)",
                 ex.Message);
         }
+
+        _logger.LogInformation(LogEmailSuccessTemplate, toEmail);
+
+        await client.DisconnectAsync(true);
     }
 }

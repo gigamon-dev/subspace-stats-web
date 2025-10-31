@@ -18,7 +18,7 @@
         /// The SendGrid key or <see langword="null"/> to use SMTP instead.
         /// </summary>
         /// <remarks>
-        /// If using SMTP instead of SendGrid, specify the other options that are prefixed with Smtp.
+        /// If using SMTP instead of SendGrid, configure the other options that are prefixed with Smtp.
         /// </remarks>
         public string? SendGridKey { get; set; }
 
@@ -27,6 +27,5 @@
         public bool SmtpSSL { get; set; }
         public string? SmtpUsername { get; set; }
         public string? SmtpPassword { get; set; }
-        public bool SmtpUseDefaultCredentials { get; set; }
     }
 }
