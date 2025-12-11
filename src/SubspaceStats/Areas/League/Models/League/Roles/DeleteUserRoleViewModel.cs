@@ -22,5 +22,9 @@ namespace SubspaceStats.Areas.League.Models.League.Roles
         public required LeagueModel League { get; set; }
 
         public LeagueSection Section => LeagueSection.Roles;
+
+        [BindNever]
+        [ValidateNever]
+        public required LeagueSeasonChooserViewModel LeagueSeasonChooser { get; init; }
     }
 }

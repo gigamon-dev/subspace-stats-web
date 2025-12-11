@@ -9,7 +9,7 @@
         select new SelectListItem(kvp.Value.Id.ToString(), kvp.Key.ToString());
 }
 
-@await Html.PartialAsync("_LeagueNav")
+<partial name="_LeagueNav" />
 
 <h1>Delete League</h1>
 

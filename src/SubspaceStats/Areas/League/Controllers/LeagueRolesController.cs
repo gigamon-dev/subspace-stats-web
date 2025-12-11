@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SubspaceStats.Areas.Identity.Data;
 using SubspaceStats.Areas.League.Authorization;
+using SubspaceStats.Areas.League.Models;
 using SubspaceStats.Areas.League.Models.League;
 using SubspaceStats.Areas.League.Models.League.Roles;
 using SubspaceStats.Services;
@@ -47,11 +48,17 @@ namespace SubspaceStats.Areas.League.Controllers
                 }
             }
 
+            Task<List<LeagueNavItem>> navTask = _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
+            Task<List<LeagueUserRole>> rolesTask = _leagueRepository.GetLeagueUserRoles(leagueId.Value, cancellationToken);
+
+            await Task.WhenAll(navTask, rolesTask);
+
             return View(
                 new LeagueRolesViewModel
                 {
                     League = league,
-                    Roles = await _leagueRepository.GetLeagueUserRoles(leagueId.Value, cancellationToken),
+                    LeagueSeasonChooser = new LeagueSeasonChooserViewModel(navTask.Result, league.Id, null),
+                    Roles = rolesTask.Result,
                     AddUserRole = new AddUserRoleViewModel()
                     {
                         Role = LeagueRole.Manager,

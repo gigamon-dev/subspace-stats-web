@@ -1,6 +1,6 @@
 ﻿@using SubspaceStats.Areas.League.Authorization
 @using SubspaceStats.Areas.League.Models.Franchise
-@model List<FranchiseListItem>
+@model FranchiseListViewModel
 
 @{
 	ViewData["Title"] = "Franchises";
@@ -15,7 +15,7 @@
 	}
 </style>
 
-@await Html.PartialAsync("_FranchiseNav")
+<partial name="_Breadcrumb" />
 
 <h1>Franchises</h1>
 
@@ -39,7 +39,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var franchise in Model)
+			@foreach (var franchise in Model.FranchiseList)
 			{
 				<tr>
 					<td><a asp-action="Details" asp-route-franchiseId="@franchise.Id" class="link-underline link-underline-opacity-0 link-underline-opacity-75-hover">@franchise.Name</a></td>

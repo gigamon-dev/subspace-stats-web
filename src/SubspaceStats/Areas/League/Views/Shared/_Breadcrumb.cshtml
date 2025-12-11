@@ -1,0 +1,93 @@
+﻿@using SubspaceStats.Areas.League.Models
+@using SubspaceStats.Areas.League.Models.Franchise
+@model IBreadcrumbViewModel
+
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item @(Model is HomeViewModel ? "active" : "")" aria-current="@(Model is HomeViewModel ? "page" : null)">
+			@if (Model is HomeViewModel)
+			{
+				<text>Home</text>
+			}
+			else
+			{
+				<a asp-controller="Home" asp-action="Index">Home</a>
+			}
+		</li>
+		@if (Model is ILeagueSeasonViewModel leagueSeasonViewModel)
+		{
+			LeagueNavItem? selectedLeagueNav = leagueSeasonViewModel.LeagueSeasonChooser.SelectedLeague;
+			SeasonNavItem? selectedSeasonNav = leagueSeasonViewModel.LeagueSeasonChooser.SelectedSeason;
+			<li class="breadcrumb-item"><a asp-controller="Home" asp-action="Nav">Leagues</a></li>
+			@if (selectedLeagueNav is not null)
+			{
+				<li class="breadcrumb-item">
+					<a class="dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">@selectedLeagueNav.LeagueName</a>
+					<ul class="dropdown-menu">
+						@for (int leagueIdx = 0; leagueIdx < leagueSeasonViewModel.LeagueSeasonChooser.LeaguesWithSeasons.Count; leagueIdx++)
+						{
+							if (leagueIdx > 0)
+							{
+								<li><hr class="dropdown-divider"></li>
+							}
+
+							LeagueNavItem leagueNav = leagueSeasonViewModel.LeagueSeasonChooser.LeaguesWithSeasons[leagueIdx];
+
+							bool isLeagueSelected = selectedSeasonNav is null && leagueNav == selectedLeagueNav;
+							bool isCollapsed = selectedSeasonNav is null || !leagueNav.Seasons.Contains(selectedSeasonNav);
+
+							<li class="dropdown-item @(isLeagueSelected ? "active" : "")">
+								<div class="d-flex">
+									<a asp-controller="League" asp-action="Details" asp-route-leagueId="@leagueNav.LeagueId" class="flex-grow-1">@leagueNav.LeagueName</a>
+									<a href="#" class="ps-2" data-bs-toggle="collapse" data-bs-target="#league-@(leagueNav.LeagueId)" role="button" aria-expanded="@(isCollapsed ? "false" : "true")" aria-controls="league-@(leagueNav.LeagueId)"><i class="bi bi-chevron-down"></i></a>
+								</div>
+							</li>
+							<li>
+								<ul id="league-@(leagueNav.LeagueId)" class="list-unstyled collapse @(isCollapsed ? "" : "show")">
+									@foreach (SeasonNavItem seasonNav in leagueNav.Seasons)
+									{
+										<li>
+											<a asp-route-seasonId="@seasonNav.SeasonId" class="dropdown-item @(seasonNav == selectedSeasonNav ? "active" : "")"><span class="ms-3">@seasonNav.SeasonName</span></a>
+										</li>
+									}
+								</ul>
+							</li>
+						}
+					</ul>
+				</li>
+				@if (selectedSeasonNav is not null)
+				{
+					<li class="breadcrumb-item active" aria-current="Page">
+
+						<a class="dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">@selectedSeasonNav.SeasonName</a>
+						<ul class="dropdown-menu">
+							@foreach (SeasonNavItem seasonNav in selectedLeagueNav.Seasons)
+							{
+								<li>
+									<a asp-route-seasonId="@seasonNav.SeasonId" class="dropdown-item @(seasonNav == selectedSeasonNav ? "active" : "")">@seasonNav.SeasonName</a>
+								</li>
+							}
+						</ul>
+					</li>
+				}
+			}
+		}
+		else if (Model is IFranchiseBreadcrumb franchiseBreadcrumb)
+		{
+			<li class="breadcrumb-item @(franchiseBreadcrumb.Franchise is null ? "active" : "")">
+				@if (franchiseBreadcrumb.Franchise is null)
+				{
+					<text>Franchises</text>
+				}
+				else
+				{
+					<a asp-controller="Franchise" asp-action="Index">Franchises</a>
+				}
+			</li>
+			if (franchiseBreadcrumb.Franchise is not null)
+			{
+				<li class="breadcrumb-item active">@franchiseBreadcrumb.Franchise.Name</li>
+			}
+		}
+	</ol>
+</nav>

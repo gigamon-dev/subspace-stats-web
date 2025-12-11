@@ -40,7 +40,7 @@ namespace SubspaceStats.Areas.League.Controllers
             }
 
             List<LeagueNavItem> leaguesWithSeasons = await _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
-            LeagueSeasonChooserViewModel seasonChooser = new(seasonId.Value, leaguesWithSeasons, Url);
+            LeagueSeasonChooserViewModel seasonChooser = new(leaguesWithSeasons, null, seasonId.Value);
             LeagueNavItem? currentLeague = seasonChooser.SelectedLeague;
             SeasonNavItem? currentSeason = seasonChooser.SelectedSeason;
             if (currentLeague is null || currentSeason is null)
@@ -58,8 +58,6 @@ namespace SubspaceStats.Areas.League.Controllers
                 new OverviewViewModel()
                 {
                     SeasonDetails = seasonDetails,
-                    LeagueNav = currentLeague,
-                    SeasonNav = currentSeason,
                     LeagueSeasonChooser = seasonChooser,
                     ScheduledGames = scheduledGamesTask.Result,
                     Standings = standingsTask.Result,
@@ -77,7 +75,7 @@ namespace SubspaceStats.Areas.League.Controllers
             }
 
             List<LeagueNavItem> leaguesWithSeasons = await _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
-            LeagueSeasonChooserViewModel seasonChooser = new(seasonId, leaguesWithSeasons, Url);
+            LeagueSeasonChooserViewModel seasonChooser = new(leaguesWithSeasons, null, seasonId);
             LeagueNavItem? currentLeague = seasonChooser.SelectedLeague;
             SeasonNavItem? currentSeason = seasonChooser.SelectedSeason;
             if (currentLeague is null || currentSeason is null)
@@ -89,8 +87,6 @@ namespace SubspaceStats.Areas.League.Controllers
                 new RostersViewModel()
                 {
                     SeasonDetails = seasonDetails,
-                    LeagueNav = currentLeague,
-                    SeasonNav = currentSeason,
                     LeagueSeasonChooser = seasonChooser,
                     Rosters = await _leagueRepository.GetSeasonRostersAsync(seasonId, cancellationToken),
                 });
@@ -119,7 +115,7 @@ namespace SubspaceStats.Areas.League.Controllers
             }
 
             List<LeagueNavItem> leaguesWithSeasons = await _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
-            LeagueSeasonChooserViewModel seasonChooser = new(seasonId, leaguesWithSeasons, Url);
+            LeagueSeasonChooserViewModel seasonChooser = new(leaguesWithSeasons, null, seasonId);
             LeagueNavItem? currentLeague = seasonChooser.SelectedLeague;
             SeasonNavItem? currentSeason = seasonChooser.SelectedSeason;
             if (currentLeague is null || currentSeason is null)
@@ -131,8 +127,6 @@ namespace SubspaceStats.Areas.League.Controllers
                 new DetailsViewModel
                 {
                     SeasonDetails = seasonDetails,
-                    LeagueNav = currentLeague,
-                    SeasonNav = currentSeason,
                     LeagueSeasonChooser = seasonChooser,
                     RefreshPlayerStatsMessage = TempData[TempDataKey_RefreshPlayerStats] as string,
                     RefreshTeamStatsMessage = TempData[TempDataKey_RefreshTeamStats] as string,
@@ -441,7 +435,7 @@ namespace SubspaceStats.Areas.League.Controllers
             }
 
             List<LeagueNavItem> leaguesWithSeasons = await _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
-            LeagueSeasonChooserViewModel seasonChooser = new(seasonId.Value, leaguesWithSeasons, Url);
+            LeagueSeasonChooserViewModel seasonChooser = new(leaguesWithSeasons, null, seasonId.Value);
             LeagueNavItem? currentLeague = seasonChooser.SelectedLeague;
             SeasonNavItem? currentSeason = seasonChooser.SelectedSeason;
             if (currentLeague is null || currentSeason is null)
@@ -458,8 +452,6 @@ namespace SubspaceStats.Areas.League.Controllers
                 new PlayersViewModel
                 {
                     SeasonDetails = seasonDetails,
-                    LeagueNav = currentLeague,
-                    SeasonNav = currentSeason,
                     LeagueSeasonChooser = seasonChooser,
                     Players = playersTask.Result,
                     Teams = teamsTask.Result,
@@ -494,7 +486,7 @@ namespace SubspaceStats.Areas.League.Controllers
             }
 
             List<LeagueNavItem> leaguesWithSeasons = await _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
-            LeagueSeasonChooserViewModel seasonChooser = new(seasonId.Value, leaguesWithSeasons, Url);
+            LeagueSeasonChooserViewModel seasonChooser = new(leaguesWithSeasons, null, seasonId.Value);
             LeagueNavItem? currentLeague = seasonChooser.SelectedLeague;
             SeasonNavItem? currentSeason = seasonChooser.SelectedSeason;
             if (currentLeague is null || currentSeason is null)
@@ -511,8 +503,6 @@ namespace SubspaceStats.Areas.League.Controllers
                 new TeamsViewModel
                 {
                     SeasonDetails = seasonDetails,
-                    LeagueNav = currentLeague,
-                    SeasonNav = currentSeason,
                     LeagueSeasonChooser = seasonChooser,
                     Teams = teamsTask.Result,
                     Franchises = franchiseTask.Result,
@@ -559,7 +549,7 @@ namespace SubspaceStats.Areas.League.Controllers
             }
 
             List<LeagueNavItem> leaguesWithSeasons = await _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
-            LeagueSeasonChooserViewModel seasonChooser = new(seasonId.Value, leaguesWithSeasons, Url);
+            LeagueSeasonChooserViewModel seasonChooser = new(leaguesWithSeasons, null, seasonId.Value);
             LeagueNavItem? currentLeague = seasonChooser.SelectedLeague;
             SeasonNavItem? currentSeason = seasonChooser.SelectedSeason;
             if (currentLeague is null || currentSeason is null)
@@ -577,8 +567,6 @@ namespace SubspaceStats.Areas.League.Controllers
                 new GamesViewModel
                 {
                     SeasonDetails = seasonDetails,
-                    LeagueNav = currentLeague,
-                    SeasonNav = currentSeason,
                     League = league,
                     Season = season,
                     LeagueSeasonChooser = seasonChooser,
@@ -616,7 +604,7 @@ namespace SubspaceStats.Areas.League.Controllers
             }
 
             List<LeagueNavItem> leaguesWithSeasons = await _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
-            LeagueSeasonChooserViewModel seasonChooser = new(seasonId.Value, leaguesWithSeasons, Url);
+            LeagueSeasonChooserViewModel seasonChooser = new(leaguesWithSeasons, null, seasonId.Value);
             LeagueNavItem? currentLeague = seasonChooser.SelectedLeague;
             SeasonNavItem? currentSeason = seasonChooser.SelectedSeason;
             if (currentLeague is null || currentSeason is null)
@@ -628,8 +616,6 @@ namespace SubspaceStats.Areas.League.Controllers
                 new RoundsViewModel
                 {
                     SeasonDetails = seasonDetails,
-                    LeagueNav = currentLeague,
-                    SeasonNav = currentSeason,
                     LeagueSeasonChooser = seasonChooser,
                     Rounds = await _leagueRepository.GetSeasonRoundsAsync(seasonId.Value, cancellationToken),
                 });

@@ -17,7 +17,11 @@ namespace SubspaceStats.Areas.League.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> Index(CancellationToken cancellationToken)
         {
-            return View(await _leagueRepository.GetFranchiseListAsync(cancellationToken));
+            return View(
+                new FranchiseListViewModel
+                {
+                    FranchiseList = await _leagueRepository.GetFranchiseListAsync(cancellationToken)
+                });
         }
 
         // GET League/Franchise/{franchiseId}
@@ -36,7 +40,7 @@ namespace SubspaceStats.Areas.League.Controllers
             }
 
             return View(
-                new FranchiseDetails
+                new FranchiseDetailsViewModel
                 {
                     Franchise = franchise,
                     TeamsAndSeasons = await _leagueRepository.GetFranchiseTeamsAsync(franchiseId.Value, cancellationToken),

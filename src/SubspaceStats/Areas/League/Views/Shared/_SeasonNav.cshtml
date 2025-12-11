@@ -1,30 +1,85 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using SubspaceStats.Areas.League.Authorization
+@using SubspaceStats.Areas.League.Models
 @using SubspaceStats.Areas.League.Models.Season
 @model ISeasonViewModel
 @inject IAuthorizationService AuthorizationService
 
 @{
 	bool isSeasonManager = (await AuthorizationService.AuthorizeAsync(User, Model.SeasonDetails, PolicyNames.Manager)).Succeeded;
+	// LeagueNavItem? selectedLeagueNav = Model.LeagueSeasonChooser.SelectedLeague;
+	// SeasonNavItem? selectedSeasonNav = Model.LeagueSeasonChooser.SelectedSeason;
 }
 
-<nav aria-label="breadcrumb">
+<partial name="_Breadcrumb" />
+
+@* <nav aria-label="breadcrumb">
 	<ol class="breadcrumb">
 		<li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
 		<li class="breadcrumb-item"><a asp-controller="Home" asp-action="Nav">Leagues</a></li>
-		<li class="breadcrumb-item"><a asp-controller="League" asp-action="Details" asp-route-leagueId="@Model.LeagueNav.LeagueId">@Model.LeagueNav.LeagueName</a></li>
-		<li class="breadcrumb-item active" aria-current="Page">@Model.SeasonNav.SeasonName</li>
-	</ol>
-</nav>
+		@if (selectedLeagueNav is not null)
+		{ 
+			<li class="breadcrumb-item">
+				<a class="dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">@selectedLeagueNav.LeagueName</a>
+				<ul class="dropdown-menu">
+					@for (int leagueIdx = 0; leagueIdx < Model.LeagueSeasonChooser.LeaguesWithSeasons.Count; leagueIdx++)
+					{
+						if (leagueIdx > 0)
+						{
+							<li><hr class="dropdown-divider"></li>
+						}
 
-<h1>@Model.SeasonNav.SeasonName</h1>
+						LeagueNavItem leagueNav = Model.LeagueSeasonChooser.LeaguesWithSeasons[leagueIdx];
+
+						bool isLeagueSelected = selectedSeasonNav is null && leagueNav == selectedLeagueNav;
+						bool isCollapsed = selectedSeasonNav is null || !leagueNav.Seasons.Contains(selectedSeasonNav);
+
+						<li class="dropdown-item @(isLeagueSelected ? "active" : "")">
+							<div class="d-flex">
+								<a asp-controller="League" asp-action="Details" asp-route-leagueId="@leagueNav.LeagueId" class="flex-grow-1">@leagueNav.LeagueName</a>
+								<a href="#" class="ps-2" data-bs-toggle="collapse" data-bs-target="#league-@(leagueNav.LeagueId)" role="button" aria-expanded="@(isCollapsed ? "false" : "true")" aria-controls="league-@(leagueNav.LeagueId)"><i class="bi bi-chevron-down"></i></a>
+							</div>
+						</li>
+						<li>
+							<ul id="league-@(leagueNav.LeagueId)" class="list-unstyled collapse @(isCollapsed ? "" : "show")">
+								@foreach (SeasonNavItem seasonNav in leagueNav.Seasons)
+								{
+									<li>
+										<a asp-route-seasonId="@seasonNav.SeasonId" class="dropdown-item @(seasonNav == selectedSeasonNav ? "active" : "")"><span class="ms-3">@seasonNav.SeasonName</span></a>
+									</li>
+								}
+							</ul>
+						</li>
+					}
+				</ul>
+			</li>
+			@if (selectedSeasonNav is not null)
+			{
+				<li class="breadcrumb-item active" aria-current="Page">
+
+					<a class="dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">@selectedSeasonNav.SeasonName</a>
+					<ul class="dropdown-menu">
+						@foreach (SeasonNavItem seasonNav in selectedLeagueNav.Seasons)
+						{
+							<li>
+								<a asp-route-seasonId="@seasonNav.SeasonId" class="dropdown-item @(seasonNav == selectedSeasonNav ? "active" : "")">@seasonNav.SeasonName</a>
+							</li>
+						}
+					</ul>
+				</li>
+			}
+		}
+	</ol>
+</nav> *@
+
+<h1>@Model.SeasonDetails.SeasonName</h1>
 
 <ul class="nav nav-underline">
 	<li class="nav-item">
-		<a asp-controller="Season" asp-action="Index" asp-route-seasonId="@Model.SeasonNav.SeasonId" class="nav-link @(Model.Page == SeasonPage.Overview ? "active" : "")">Overview</a>
+		<a asp-controller="Season" asp-action="Index" asp-route-seasonId="@Model.SeasonDetails.SeasonId" class="nav-link @(Model.Page == SeasonPage.Overview ? "active" : "")">Overview</a>
 	</li>
 	<li class="nav-item">
-		<a asp-controller="Season" asp-action="Rosters" asp-route-seasonId="@Model.SeasonNav.SeasonId" class="nav-link @(Model.Page == SeasonPage.Rosters ? "active" : "")">Rosters</a>
+		<a asp-controller="Season" asp-action="Rosters" asp-route-seasonId="@Model.SeasonDetails.SeasonId" class="nav-link @(Model.Page == SeasonPage.Rosters ? "active" : "")">Rosters</a>
 	</li>
 	<li class="nav-item">
 		<a asp-area="" asp-controller="Leaderboard" asp-action="Index" asp-route-gameType="@Model.SeasonDetails.StatsGameType?.Id" asp-route-period="@Model.SeasonDetails.StatPeriodId" target="_blank" class="nav-link @(Model.SeasonDetails.StatsGameType is null ? "disabled" : "")">
@@ -35,22 +90,22 @@
 	@if (isSeasonManager)
 	{
 		<li class="nav-item">
-			<a asp-controller="Season" asp-action="Details" asp-route-seasonId="@Model.SeasonNav.SeasonId" class="nav-link @(Model.Page == SeasonPage.Details ? "active" : "")">Manage Season</a>
+			<a asp-controller="Season" asp-action="Details" asp-route-seasonId="@Model.SeasonDetails.SeasonId" class="nav-link @(Model.Page == SeasonPage.Details ? "active" : "")">Manage Season</a>
 		</li>
 		<li class="nav-item">
-			<a asp-controller="Season" asp-action="Players" asp-route-seasonId="@Model.SeasonNav.SeasonId" class="nav-link @(Model.Page == SeasonPage.Players ? "active" : "")">Manage Players</a>
+			<a asp-controller="Season" asp-action="Players" asp-route-seasonId="@Model.SeasonDetails.SeasonId" class="nav-link @(Model.Page == SeasonPage.Players ? "active" : "")">Manage Players</a>
 		</li>
 		<li class="nav-item">
-			<a asp-controller="Season" asp-action="Teams" asp-route-seasonId="@Model.SeasonNav.SeasonId" class="nav-link @(Model.Page == SeasonPage.Teams ? "active" : "")">Manage Teams</a>
+			<a asp-controller="Season" asp-action="Teams" asp-route-seasonId="@Model.SeasonDetails.SeasonId" class="nav-link @(Model.Page == SeasonPage.Teams ? "active" : "")">Manage Teams</a>
 		</li>
 		<li class="nav-item">
-			<a asp-controller="Season" asp-action="Games" asp-route-seasonId="@Model.SeasonNav.SeasonId" class="nav-link @(Model.Page == SeasonPage.Games ? "active" : "")">Manage Games</a>
+			<a asp-controller="Season" asp-action="Games" asp-route-seasonId="@Model.SeasonDetails.SeasonId" class="nav-link @(Model.Page == SeasonPage.Games ? "active" : "")">Manage Games</a>
 		</li>
 		<li class="nav-item">
-			<a asp-controller="Season" asp-action="Rounds" asp-route-seasonId="@Model.SeasonNav.SeasonId" class="nav-link @(Model.Page == SeasonPage.Rounds ? "active" : "")">Manage Rounds</a>
+			<a asp-controller="Season" asp-action="Rounds" asp-route-seasonId="@Model.SeasonDetails.SeasonId" class="nav-link @(Model.Page == SeasonPage.Rounds ? "active" : "")">Manage Rounds</a>
 		</li>
 		<li class="nav-item">
-			<a asp-controller="SeasonRoles" asp-action="Index" asp-route-seasonId="@Model.SeasonNav.SeasonId" class="nav-link @(Model.Page == SeasonPage.Roles ? "active" : "")">Manage Roles</a>
+			<a asp-controller="SeasonRoles" asp-action="Index" asp-route-seasonId="@Model.SeasonDetails.SeasonId" class="nav-link @(Model.Page == SeasonPage.Roles ? "active" : "")">Manage Roles</a>
 		</li>
 	}
 </ul>

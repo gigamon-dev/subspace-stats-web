@@ -9,8 +9,7 @@
 	ViewData["Title"] = "Manage Players";
 }
 
-@await Html.PartialAsync("_LeagueSeasonChooser", Model.LeagueSeasonChooser)
-@await Html.PartialAsync("_SeasonNav")
+<partial name="_SeasonNav" />
 @* <h1>Manage Players</h1> *@
 
 <div class="mb-3">
@@ -71,7 +70,3 @@
 		</tbody>
 	</table>
 </div>
-
-@section Scripts {
-	@await Html.PartialAsync("_LeagueSeasonChooseScript", Model.LeagueSeasonChooser)
-}

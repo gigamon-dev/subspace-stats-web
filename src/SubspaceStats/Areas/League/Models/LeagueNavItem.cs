@@ -21,9 +21,6 @@ namespace SubspaceStats.Areas.League.Models
 
         [JsonPropertyName("season_name")]
         public required string SeasonName { get; init; }
-
-        [JsonPropertyName("url")]
-        public string? Url { get; set; }
     }
 
     [JsonSerializable(typeof(List<LeagueNavItem>), GenerationMode = JsonSourceGenerationMode.Metadata)]

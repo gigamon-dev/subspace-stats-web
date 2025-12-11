@@ -9,7 +9,7 @@ namespace SubspaceStats.Areas.League.Models.Franchise
     // POST /Franchise/Edit
     // GET /Franchise/Delete
     // POST /Franchise/Delete
-    public class FranchiseModel
+    public class FranchiseModel : IFranchiseBreadcrumb
     {
         [Display(Name = "Franchise ID")]
         public required long Id { get; set; }

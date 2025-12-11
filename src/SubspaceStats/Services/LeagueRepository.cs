@@ -34,7 +34,7 @@ namespace SubspaceStats.Services
                 _configuration.GetConnectionString("SubspaceStats") ?? throw new Exception("Missing 'SubspaceStats' connection string."));
         }
 
-        public async Task<List<SeasonStandings>?> GetLatestSeasonsStandingsAsync(long[] leagueIds, CancellationToken cancellationToken)
+        public async Task<List<SeasonStandings>> GetLatestSeasonsStandingsAsync(long[] leagueIds, CancellationToken cancellationToken)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace SubspaceStats.Services
                             Stream stream = await reader.GetStreamAsync(0, cancellationToken).ConfigureAwait(false);
                             await using (stream.ConfigureAwait(false))
                             {
-                                return await JsonSerializer.DeserializeAsync(stream, SeasonStandingsSourceGenerationContext.Default.ListSeasonStandings, cancellationToken).ConfigureAwait(false);
+                                return await JsonSerializer.DeserializeAsync(stream, SeasonStandingsSourceGenerationContext.Default.ListSeasonStandings, cancellationToken).ConfigureAwait(false) ?? [];
                             }
                         }
                     }

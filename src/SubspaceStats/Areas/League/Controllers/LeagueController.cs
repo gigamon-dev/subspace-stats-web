@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SubspaceStats.Areas.League.Authorization;
+using SubspaceStats.Areas.League.Models;
 using SubspaceStats.Areas.League.Models.League;
 using SubspaceStats.Models;
 using SubspaceStats.Services;
@@ -21,14 +22,16 @@ namespace SubspaceStats.Areas.League.Controllers
         [Authorize(Roles = RoleNames.Administrator)]
         public async Task<ActionResult> Index(CancellationToken cancellationToken)
         {
+            Task<List<LeagueNavItem>> navTask = _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
             Task<List<LeagueModel>> leagueListTask = _leagueRepository.GetLeagueListAsync(cancellationToken);
             Task<OrderedDictionary<long, GameType>> gameTypesTask = _statsRepository.GetGameTypesAsync(cancellationToken);
 
-            await Task.WhenAll(leagueListTask, gameTypesTask);
+            await Task.WhenAll(navTask, leagueListTask, gameTypesTask);
 
             return View(
                 new LeagueListViewModel()
                 {
+                    LeagueSeasonChooser = new LeagueSeasonChooserViewModel(navTask.Result, null, null),
                     Leagues = leagueListTask.Result,
                     GameTypes = gameTypesTask.Result,
                 });
@@ -48,14 +51,19 @@ namespace SubspaceStats.Areas.League.Controllers
                 return NotFound();
             }
 
+            Task<List<LeagueNavItem>> navTask = _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
             Task<List<SeasonListItem>> seasonsTask = _leagueRepository.GetSeasonsAsync(leagueId.Value, cancellationToken);
+            Task<OrderedDictionary<long, GameType>> gameTypesTask = _statsRepository.GetGameTypesAsync(cancellationToken);
+
+            await Task.WhenAll(navTask, seasonsTask, gameTypesTask);
 
             return View(
                 new LeagueDetailsViewModel
                 {
                     League = league,
-                    GameTypes = await _statsRepository.GetGameTypesAsync(cancellationToken),
-                    Seasons = await seasonsTask,
+                    LeagueSeasonChooser = new LeagueSeasonChooserViewModel(navTask.Result, league.Id, null),
+                    GameTypes = gameTypesTask.Result,
+                    Seasons = seasonsTask.Result,
                 });
         }
 
@@ -63,6 +71,11 @@ namespace SubspaceStats.Areas.League.Controllers
         [Authorize(Roles = RoleNames.Administrator)]
         public async Task<ActionResult> Create(CancellationToken cancellationToken)
         {
+            Task<List<LeagueNavItem>> navTask = _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
+            Task<OrderedDictionary<long, GameType>> gameTypesTask = _statsRepository.GetGameTypesAsync(cancellationToken);
+
+            await Task.WhenAll(navTask, gameTypesTask);
+
             return View(
                 new LeagueViewModel()
                 {
@@ -74,7 +87,8 @@ namespace SubspaceStats.Areas.League.Controllers
                         FreqStart = 10,
                         FreqIncrement = 10,
                     },
-                    GameTypes = await _statsRepository.GetGameTypesAsync(cancellationToken),
+                    LeagueSeasonChooser = new LeagueSeasonChooserViewModel(navTask.Result, null, null),
+                    GameTypes = gameTypesTask.Result,
                 });
         }
 
@@ -88,11 +102,17 @@ namespace SubspaceStats.Areas.League.Controllers
         {
             if (!ModelState.IsValid)
             {
+                Task<List<LeagueNavItem>> navTask = _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
+                Task<OrderedDictionary<long, GameType>> gameTypesTask = _statsRepository.GetGameTypesAsync(cancellationToken);
+
+                await Task.WhenAll(navTask, gameTypesTask);
+
                 return View(
                     new LeagueViewModel()
                     {
                         League = league,
-                        GameTypes = await _statsRepository.GetGameTypesAsync(cancellationToken),
+                        LeagueSeasonChooser = new LeagueSeasonChooserViewModel(navTask.Result, null, null),
+                        GameTypes = gameTypesTask.Result,
                     });
             }
 
@@ -134,12 +154,18 @@ namespace SubspaceStats.Areas.League.Controllers
                     return Challenge();
                 }
             }
-            
+
+            Task<List<LeagueNavItem>> navTask = _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
+            Task<OrderedDictionary<long, GameType>> gameTypesTask = _statsRepository.GetGameTypesAsync(cancellationToken);
+
+            await Task.WhenAll(navTask, gameTypesTask);
+
             return View(
                 new LeagueViewModel
                 {
                     League = league,
-                    GameTypes = await _statsRepository.GetGameTypesAsync(cancellationToken),
+                    LeagueSeasonChooser = new LeagueSeasonChooserViewModel(navTask.Result, league.Id, null),
+                    GameTypes = gameTypesTask.Result,
                 });
         }
 
@@ -177,11 +203,17 @@ namespace SubspaceStats.Areas.League.Controllers
 
             if (!ModelState.IsValid)
             {
+                Task<List<LeagueNavItem>> navTask = _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
+                Task<OrderedDictionary<long, GameType>> gameTypesTask = _statsRepository.GetGameTypesAsync(cancellationToken);
+
+                await Task.WhenAll(navTask, gameTypesTask);
+
                 return View(
                     new LeagueViewModel
                     {
                         League = league,
-                        GameTypes = await _statsRepository.GetGameTypesAsync(cancellationToken),
+                        LeagueSeasonChooser = new LeagueSeasonChooserViewModel(navTask.Result, league.Id, null),
+                        GameTypes = gameTypesTask.Result,
                     });
             }
 
@@ -204,11 +236,17 @@ namespace SubspaceStats.Areas.League.Controllers
                 return NotFound();
             }
 
+            Task<List<LeagueNavItem>> navTask = _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
+            Task<OrderedDictionary<long, GameType>> gameTypesTask = _statsRepository.GetGameTypesAsync(cancellationToken);
+
+            await Task.WhenAll(navTask, gameTypesTask);
+
             return View(
                 new LeagueViewModel
                 {
                     League = league,
-                    GameTypes = await _statsRepository.GetGameTypesAsync(cancellationToken),
+                    LeagueSeasonChooser = new LeagueSeasonChooserViewModel(navTask.Result, league.Id, null),
+                    GameTypes = gameTypesTask.Result,
                 });
         }
 

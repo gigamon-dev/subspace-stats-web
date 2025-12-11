@@ -13,7 +13,6 @@
 	SelectListItem[] roles = [new SelectListItem("Manager", "1")];
 }
 
-<partial name="_LeagueSeasonChooser" model="@Model.LeagueSeasonChooser" />
 <partial name="_SeasonNav" />
 
 <h4>Season Roles</h4>
@@ -92,7 +91,3 @@
 		</div>
 	</div>
 </div>
-
-@section Scripts {
-	<partial name="_LeagueSeasonChooseScript" model="@Model.LeagueSeasonChooser" />
-}

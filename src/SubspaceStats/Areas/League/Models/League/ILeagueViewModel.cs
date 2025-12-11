@@ -1,6 +1,6 @@
 ﻿namespace SubspaceStats.Areas.League.Models.League
 {
-    public interface ILeagueViewModel
+    public interface ILeagueViewModel : ILeagueSeasonViewModel
     {
         public LeagueModel? League { get; }
         public LeagueSection Section { get; }

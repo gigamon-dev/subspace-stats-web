@@ -1,34 +1,48 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace SubspaceStats.Areas.League.Models
 {
     public class LeagueSeasonChooserViewModel
     {
-        public LeagueSeasonChooserViewModel(long selectedSeasonId, List<LeagueNavItem> leaguesWithSeasons, IUrlHelper urlHelper)
+        public LeagueSeasonChooserViewModel(List<LeagueNavItem> leaguesWithSeasons, long? selectedLeagueId, long? selectedSeasonId)
         {
             LeaguesWithSeasons = leaguesWithSeasons;
 
             foreach (LeagueNavItem league in LeaguesWithSeasons)
             {
-                foreach (var season in league.Seasons)
+                if (selectedSeasonId is not null)
                 {
-                    season.Url = urlHelper.Action(null, null, new { seasonId = season.SeasonId });
-
-                    if (season.SeasonId == selectedSeasonId)
+                    if (TryGetSelectedSeason(league, selectedSeasonId.Value, out SeasonNavItem? season))
                     {
                         SelectedLeague = league;
                         SelectedSeason = season;
+                        break;
                     }
+                }
+                else if (selectedLeagueId is not null && league.LeagueId == selectedLeagueId)
+                {
+                    SelectedLeague = league;
                 }
             }
 
-            LeaguesWithSeasonsJson = JsonSerializer.Serialize(LeaguesWithSeasons, SeasonNavSourceGenerationContext.Default.ListLeagueNavItem);
+            static bool TryGetSelectedSeason(LeagueNavItem league, long selectedSeasonId, [MaybeNullWhen(false)]out SeasonNavItem selectedSeason)
+            {
+                foreach (var season in league.Seasons)
+                {
+                    if (season.SeasonId == selectedSeasonId)
+                    {
+                        selectedSeason = season;
+                        return true;
+                    }
+                }
+
+                selectedSeason = null;
+                return false;
+            }
         }
 
         public List<LeagueNavItem> LeaguesWithSeasons { get; }
         public LeagueNavItem? SelectedLeague { get; }
         public SeasonNavItem? SelectedSeason { get; }
-        public string LeaguesWithSeasonsJson { get; }
     }
 }

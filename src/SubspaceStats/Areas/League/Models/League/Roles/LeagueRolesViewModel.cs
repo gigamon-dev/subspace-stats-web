@@ -4,6 +4,7 @@
     {
         public required LeagueModel League { get; init; }
         public LeagueSection Section => LeagueSection.Roles;
+        public required LeagueSeasonChooserViewModel LeagueSeasonChooser { get; init; }
         public required List<LeagueUserRole> Roles { get; init; }
 
         public AddUserRoleViewModel? AddUserRole { get; init; }

@@ -15,7 +15,7 @@ namespace SubspaceStats.Services
 {
     public interface ILeagueRepository
     {
-        Task<List<SeasonStandings>?> GetLatestSeasonsStandingsAsync(long[] leagueIds, CancellationToken cancellationToken);
+        Task<List<SeasonStandings>> GetLatestSeasonsStandingsAsync(long[] leagueIds, CancellationToken cancellationToken);
         Task<List<SeasonRoster>> GetSeasonRostersAsync(long seasonId, CancellationToken cancellationToken);
         Task<List<TeamStanding>> GetSeasonStandingsAsync(long seasonId, CancellationToken cancellationToken);
         Task<List<ScheduledGame>> GetScheduledGamesAsync(long seasonId, CancellationToken cancellationToken);

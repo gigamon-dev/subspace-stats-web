@@ -56,7 +56,7 @@ namespace SubspaceStats.Areas.League.Controllers
             }
 
             List<LeagueNavItem> leaguesWithSeasons = await _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
-            LeagueSeasonChooserViewModel seasonChooser = new(seasonId.Value, leaguesWithSeasons, Url);
+            LeagueSeasonChooserViewModel seasonChooser = new(leaguesWithSeasons, null, seasonId.Value);
             LeagueNavItem? currentLeague = seasonChooser.SelectedLeague;
             SeasonNavItem? currentSeason = seasonChooser.SelectedSeason;
             if (currentLeague is null || currentSeason is null)
@@ -69,8 +69,6 @@ namespace SubspaceStats.Areas.League.Controllers
                 {
                     SeasonDetails = seasonDetails,
                     League = league,
-                    LeagueNav = currentLeague,
-                    SeasonNav = currentSeason,
                     LeagueSeasonChooser = seasonChooser,
                     Roles = await _leagueRepository.GetSeasonUserRoles(seasonId.Value, cancellationToken),
                     AddUserRole = new AddUserRoleViewModel()
@@ -181,7 +179,7 @@ namespace SubspaceStats.Areas.League.Controllers
             }
 
             List<LeagueNavItem> leaguesWithSeasons = await _leagueRepository.GetLeaguesWithSeasonsAsync(cancellationToken);
-            LeagueSeasonChooserViewModel seasonChooser = new(seasonId.Value, leaguesWithSeasons, Url);
+            LeagueSeasonChooserViewModel seasonChooser = new(leaguesWithSeasons, null, seasonId.Value);
             LeagueNavItem? currentLeague = seasonChooser.SelectedLeague;
             SeasonNavItem? currentSeason = seasonChooser.SelectedSeason;
             if (currentLeague is null || currentSeason is null)
@@ -196,8 +194,6 @@ namespace SubspaceStats.Areas.League.Controllers
             }
 
             model.SeasonDetails = seasonDetails;
-            model.SeasonNav = currentSeason;
-            model.LeagueNav = currentLeague;
             model.LeagueSeasonChooser = seasonChooser;
             return View(model);
         }

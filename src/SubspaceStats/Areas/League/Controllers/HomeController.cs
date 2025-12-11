@@ -20,8 +20,11 @@ namespace SubspaceStats.Areas.League.Controllers
             // TODO: add scheduled games across all configured LeagueIds
 
             // Show latest standings for the configured LeagueIds
-            List<SeasonStandings>? seasonsStandings = await _leagueRepository.GetLatestSeasonsStandingsAsync(_options.Value.LeagueIds, cancellationToken);
-            return View(seasonsStandings);
+            return View(
+                new HomeViewModel
+                {
+                    Standings = await _leagueRepository.GetLatestSeasonsStandingsAsync(_options.Value.LeagueIds, cancellationToken),
+                });
         }
 
         // GET League/Nav

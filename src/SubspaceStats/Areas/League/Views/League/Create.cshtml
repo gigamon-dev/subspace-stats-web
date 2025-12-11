@@ -9,7 +9,7 @@
         select new SelectListItem(kvp.Value.Name, kvp.Key.ToString());
 }
 
-@await Html.PartialAsync("_LeagueNav")
+<partial name="_LeagueNav" />
 
 <h1>New League</h1>
 
@@ -20,7 +20,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6 order-md-2">
-            @await Html.PartialAsync("_LeagueNotes")
+            <partial name="_LeagueNotes" />
         </div>
         <div class="col-md-6 order-md-1">
             <form asp-controller="League" asp-action="Create">
