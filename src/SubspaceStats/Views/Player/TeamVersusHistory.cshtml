@@ -268,8 +268,8 @@
 								</td>
 								<td>
 									<div>@((periodStats.MineFireCount / (double)periodStats.Games).ToString("f1"))</div>
-									<div>@((periodStats.BombFireCount / (double)periodStats.Games).ToString("f1"))</div>
-									<div>@((periodStats.BulletFireCount / (double)periodStats.Games).ToString("f1"))</div>
+									<div>@((periodStats.BombFireCount / (double)periodStats.PlayDuration.TotalMinutes).ToString("f1"))</div>
+									<div>@((periodStats.BulletFireCount / (double)periodStats.PlayDuration.TotalMinutes).ToString("f1"))</div>
 								</td>
 								<td>
 									<div>@((int)(periodStats.WastedEnergy / periodStats.PlayDuration.TotalMinutes))</div>
