@@ -1,9 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Options
 @using SubspaceStats.Areas.Identity.Data
 @using SubspaceStats.Areas.League.Authorization
 @using SubspaceStats.Areas.League.Models.League
 @using SubspaceStats.Areas.League.Models.League.PlayerRoles
+@using SubspaceStats.Options
 @model LeaguePlayerRolesViewModel
+@inject IOptions<GeneralOptions> generalOptions
 @inject UserManager<SubspaceStatsUser> UserManager
 
 @{
@@ -60,7 +63,7 @@
 						<tr>
 							<th>Player Name</th>
 							<th>Role</th>
-							<th>Request Timestamp</th>
+							<th title="Request Timestamp @generalOptions.Value.TimeZone.DisplayName">Request Timestamp</th>
 							<th>Action</th>
 						</tr>
 					</thead>
@@ -75,7 +78,7 @@
 									@Html.DisplayFor(modelItem => record.Role)
 								</td>
 								<td>
-									@record.RequestTimestamp.ToString("u")
+									@TimeZoneInfo.ConvertTimeFromUtc(record.RequestTimestamp, generalOptions.Value.TimeZone).ToString("yyyy-MM-dd hh:mm tt")
 								</td>
 								<td>
 									<div class="d-flex">
