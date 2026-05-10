@@ -4,6 +4,14 @@
     {
         public required StatPeriod StatPeriod { get; init; }
         public required int? Rank { get; init; }
+
+        /// <summary>
+        /// The current rating of the player for the <see cref="StatPeriod"/>.
+        /// </summary>
+        /// <remarks>
+        /// A player's rating for a stat period starts at an initial amount (ss.stat_tracking.initial_rating).
+        /// Also, it cannot fall below a certain amount (ss.stat_tracking.minimum_rating).
+        /// </remarks>
         public int? Rating { get; init; }
         public required long Games { get; init; }
         public required long Wins { get; init; }
@@ -47,5 +55,6 @@
         public required long? EnemyDistanceSamples { get; init; }
         public required long? TeamDistanceSum { get; init; }
         public required long? TeamDistanceSamples { get; init; }
+        public required float RatingAverage { get; init; }
     }
 }

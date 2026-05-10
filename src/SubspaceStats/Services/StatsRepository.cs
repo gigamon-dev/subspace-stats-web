@@ -302,6 +302,7 @@ namespace SubspaceStats.Services
                             int column_playerName = reader.GetOrdinal("player_name");
                             int column_squadName = reader.GetOrdinal("squad_name");
                             int column_rating = reader.GetOrdinal("rating");
+                            int column_ratingAvg = reader.GetOrdinal("rating_avg");
                             int column_gamesPlayed = reader.GetOrdinal("games_played");
                             int column_playDuration = reader.GetOrdinal("play_duration");
                             int column_wins = reader.GetOrdinal("wins");
@@ -327,6 +328,7 @@ namespace SubspaceStats.Services
                                     PlayerName = reader.GetString(column_playerName),
                                     SquadName = reader.IsDBNull(column_squadName) ? null : reader.GetString(column_squadName),
                                     Rating = reader.GetInt32(column_rating),
+                                    RatingAverage = reader.GetFloat(column_ratingAvg),
                                     GamesPlayed = reader.GetInt64(column_gamesPlayed),
                                     PlayDuration = reader.GetTimeSpan(column_playDuration),
                                     Wins = reader.GetInt64(column_wins),
@@ -758,6 +760,7 @@ namespace SubspaceStats.Services
                             int column_enemyDistanceSamples = reader.GetOrdinal("enemy_distance_samples");
                             int column_teamDistanceSum = reader.GetOrdinal("team_distance_sum");
                             int column_teamDistanceSamples = reader.GetOrdinal("team_distance_samples");
+                            int column_ratingAvg = reader.GetOrdinal("rating_avg");
 
                             List<TeamVersusPeriodStats> periodStatsList = [];
 
@@ -825,6 +828,7 @@ namespace SubspaceStats.Services
                                         EnemyDistanceSamples = reader.IsDBNull(column_enemyDistanceSamples) ? null : reader.GetInt64(column_enemyDistanceSamples),
                                         TeamDistanceSum = reader.IsDBNull(column_teamDistanceSum) ? null : reader.GetInt64(column_teamDistanceSum),
                                         TeamDistanceSamples = reader.IsDBNull(column_teamDistanceSamples) ? null : reader.GetInt64(column_teamDistanceSamples),
+                                        RatingAverage = reader.GetFloat(column_ratingAvg),
                                     });
                             }
 

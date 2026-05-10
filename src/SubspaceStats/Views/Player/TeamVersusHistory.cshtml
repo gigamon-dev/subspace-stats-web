@@ -196,13 +196,17 @@
 								</th>
 								<td class="text-center">
 									<div>@periodStats.Wins-@periodStats.Losses</div>
-									<div>@periodStats.Rating</div>
 									<div>
-										@if(periodStats.Rating is not null)
+										@if (periodStats.Rating is null)
 										{
-											@(((periodStats.Rating.Value - 500) / (float)periodStats.Games).ToString("f2"))
+											<text>&nbsp;</text>
+										}
+										else
+										{
+											@periodStats.Rating
 										}
 									</div>
+									<div>@periodStats.RatingAverage.ToString("f2")</div>
 								</td>
 								<td class="text-center">
 									<div>@periodStats.Kills/@periodStats.Deaths</div>

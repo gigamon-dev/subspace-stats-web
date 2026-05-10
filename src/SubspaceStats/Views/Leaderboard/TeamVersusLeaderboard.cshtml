@@ -186,8 +186,7 @@ TODO: TOP 5 lists
 			{
 				foreach (var pilotStats in Model.Stats)
 				{
-					double avgRating = (pilotStats.Rating - 500) / pilotStats.GamesPlayed;
-					string? avgRatingClass = avgRating >= 0 ? "text-success" : "text-danger";
+					string? avgRatingClass = pilotStats.RatingAverage >= 0 ? "text-success" : "text-danger";
 
 					double firstOutRatio = (double)pilotStats.FirstOut / pilotStats.GamesPlayed;
 					string? firstOutClass = null;
@@ -201,7 +200,7 @@ TODO: TOP 5 lists
 						<td>@Html.ActionLink(pilotStats.PlayerName, "Index", "Player", new { playerName = pilotStats.PlayerName, gameType = Model.GameType.Id, period = Model.SelectedPeriod?.StatPeriodId })</td>
 						<td>@pilotStats.SquadName</td>
 						<td class="text-end">@pilotStats.Rating</td>
-						<td class="text-end @avgRatingClass">@avgRating</td>
+						<td class="text-end @avgRatingClass">@pilotStats.RatingAverage.ToString("f2")</td>
 						<td class="text-center">@pilotStats.Kills/@pilotStats.Deaths</td>
 						<td class="text-center">@pilotStats.Wins-@pilotStats.Losses</td>
 						<td class="text-center">@((int)(pilotStats.DamageDealt / pilotStats.PlayDuration.TotalMinutes))/@((int)(pilotStats.DamageTaken / pilotStats.PlayDuration.TotalMinutes))</td>

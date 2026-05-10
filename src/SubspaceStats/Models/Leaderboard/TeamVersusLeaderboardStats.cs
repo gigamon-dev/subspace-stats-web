@@ -6,6 +6,7 @@
         public required string PlayerName { get; init; }
         public required string? SquadName { get; init; }
         public required int Rating { get; init; }
+        public required float RatingAverage { get; init; }
         public required long GamesPlayed { get; init; }
         public required TimeSpan PlayDuration { get; init; }
         public required long Wins { get; init; }
