@@ -9,8 +9,6 @@ namespace SubspaceStats.Areas.League.Models.Season.Round
         public required long SeasonId { get; set; }
 
         [Display(Name = "Round Number")]
-        
-        [Required]
         [Remote("ValidateSeasonRound", "SeasonRound", "League", AdditionalFields = nameof(SeasonId))]
         public required int RoundNumber { get; set; }
 

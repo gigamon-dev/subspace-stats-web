@@ -180,7 +180,7 @@ namespace SubspaceStats.Areas.League.Controllers
         public async Task<ActionResult> Edit(
             long seasonId,
             int roundNumber,
-            [Bind("SeasonId", "RoundNumber", "RoundName", "RoundDescription")] SeasonRound round,
+            SeasonRound round,
             CancellationToken cancellationToken)
         {
             if (seasonId != round.SeasonId || roundNumber != round.RoundNumber)

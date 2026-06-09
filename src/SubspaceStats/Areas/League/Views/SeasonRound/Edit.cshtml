@@ -28,6 +28,8 @@
         <h4>Round info</h4>
         <div class="ms-3">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Round.SeasonId" type="hidden" />
+            <input asp-for="Round.RoundNumber" type="hidden" />
             <div class="mb-3">
                 <label asp-for="Round.RoundNumber" class="form-label"></label>
                 <input asp-for="Round.RoundNumber" class="form-control" disabled readonly />
